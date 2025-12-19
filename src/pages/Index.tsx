@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import Icon from '@/components/ui/icon';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
@@ -21,6 +21,15 @@ const donationPackages = [
   { name: 'Спонсор', price: '4999₽', color: 'from-amber-500 to-amber-700', perks: ['Префикс [Спонсор]', '+100% к опыту', '/home безлимит', 'WorldEdit безлимит', 'Все привилегии'] },
 ];
 
+const cases = [
+  { name: 'Кейс с привилегиями', price: '149₽', color: 'from-yellow-400 to-amber-600', icon: 'Crown', perks: ['Случайная привилегия', 'От Барон до Страж', 'Гарантированная выдача'] },
+  { name: 'Обычный кейс', price: '99₽', color: 'from-gray-400 to-gray-600', icon: 'Package', perks: ['Случайные предметы', 'Ресурсы и блоки', 'Декор для базы'] },
+  { name: 'Кейс с токенами', price: '199₽', color: 'from-yellow-500 to-orange-500', icon: 'Coins', perks: ['50-500 токенов', 'Внутренняя валюта', 'Обмен на привилегии'] },
+  { name: 'Кейс с инструментами', price: '299₽', color: 'from-blue-400 to-cyan-600', icon: 'Wrench', perks: ['Зачарованные инструменты', 'Прочность до Неразрушимости', 'Кирка с Fortune III'] },
+  { name: 'Кейс с оружием', price: '349₽', color: 'from-red-500 to-rose-700', icon: 'Sword', perks: ['Зачарованное оружие', 'Мечи с Острота V', 'Луки с Сила V'] },
+  { name: 'Кейс с бронёй', price: '399₽', color: 'from-purple-500 to-violet-700', icon: 'Shield', perks: ['Полный сет брони', 'Защита IV на всех частях', 'Неразрушимость III'] },
+];
+
 const rules = [
   { category: 'Общие правила', items: ['Уважайте других игроков', 'Запрещен читерский софт', 'Запрещен спам в чате', 'Запрещена реклама других серверов'] },
   { category: 'Игровой процесс', items: ['Гриферство запрещено', 'Убийство в спавне запрещено', 'Запрещено создание лаговых механизмов', 'Дюпы предметов караются баном'] },
@@ -28,7 +37,7 @@ const rules = [
 ];
 
 export default function Index() {
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('главная');
   const [onlinePlayers] = useState(247);
   const [maxPlayers] = useState(500);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -142,7 +151,7 @@ export default function Index() {
             </div>
             
             <div className="hidden md:flex items-center gap-6">
-              {['Главная', 'Донаты', 'Правила', 'Онлайн', 'Генератор', 'Контакты'].map((item) => (
+              {['Главная', 'Донаты', 'Правила', 'Генератор', 'Контакты'].map((item) => (
                 <button
                   key={item}
                   onClick={() => handleNavClick(item)}
@@ -181,7 +190,7 @@ export default function Index() {
         {mobileMenuOpen && (
           <div className="md:hidden glass-effect border-t border-white/10 animate-fade-in">
             <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
-              {['Главная', 'Донаты', 'Правила', 'Онлайн', 'Генератор', 'Контакты'].map((item) => (
+              {['Главная', 'Донаты', 'Правила', 'Генератор', 'Контакты'].map((item) => (
                 <button
                   key={item}
                   onClick={() => handleNavClick(item)}
@@ -295,6 +304,46 @@ export default function Index() {
               ))}
             </div>
 
+            <div className="mt-16">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold gradient-text mb-4">Кейсы с наградами</h2>
+                <p className="text-xl text-muted-foreground">Попытай удачу и получи ценные призы!</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {cases.map((caseItem, idx) => (
+                  <Card key={idx} className="glass-effect p-6 hover-scale group relative overflow-hidden">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${caseItem.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-center mb-4">
+                        <div className={`w-20 h-20 rounded-full bg-gradient-to-r ${caseItem.color} flex items-center justify-center`}>
+                          <Icon name={caseItem.icon as any} size={40} className="text-white" />
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-center mb-2">{caseItem.name}</h3>
+                      <p className="text-3xl font-black text-center mb-6">{caseItem.price}</p>
+                      
+                      <div className="space-y-2 mb-6">
+                        {caseItem.perks.map((perk, i) => (
+                          <div key={i} className="flex items-start gap-2">
+                            <Icon name="Star" size={16} className="text-yellow-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm text-muted-foreground">{perk}</span>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <Button className={`w-full bg-gradient-to-r ${caseItem.color} hover:opacity-90`}>
+                        <Icon name="Box" size={16} className="mr-2" />
+                        Открыть кейс
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
             <Card className="glass-effect p-8 mt-12 text-center">
               <Icon name="Coins" size={48} className="text-yellow-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold mb-2">Токены - внутренняя валюта</h3>
@@ -338,67 +387,7 @@ export default function Index() {
           </section>
         )}
 
-        {activeSection === 'онлайн' && (
-          <section className="container mx-auto px-4 max-w-4xl">
-            <div className="text-center mb-12">
-              <h2 className="text-5xl font-bold gradient-text mb-4">Мониторинг онлайна</h2>
-              <p className="text-xl text-muted-foreground">Статистика сервера в реальном времени</p>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <Card className="glass-effect p-8 text-center hover-scale">
-                <Icon name="Users" size={64} className="text-primary mx-auto mb-4" />
-                <p className="text-6xl font-black mb-2">{onlinePlayers}</p>
-                <p className="text-xl text-muted-foreground">Игроков онлайн</p>
-              </Card>
-              
-              <Card className="glass-effect p-8 text-center hover-scale">
-                <Icon name="TrendingUp" size={64} className="text-secondary mx-auto mb-4" />
-                <p className="text-6xl font-black mb-2">{maxPlayers}</p>
-                <p className="text-xl text-muted-foreground">Максимум слотов</p>
-              </Card>
-            </div>
-
-            <Card className="glass-effect p-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold">Загрузка сервера</h3>
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/50">
-                  {Math.round((onlinePlayers / maxPlayers) * 100)}% загружен
-                </Badge>
-              </div>
-              
-              <div className="w-full bg-muted rounded-full h-4 overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-500"
-                  style={{ width: `${(onlinePlayers / maxPlayers) * 100}%` }}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                <div className="text-center">
-                  <Icon name="Clock" size={32} className="text-accent mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Аптайм</p>
-                  <p className="text-lg font-bold">99.9%</p>
-                </div>
-                <div className="text-center">
-                  <Icon name="Zap" size={32} className="text-yellow-500 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">TPS</p>
-                  <p className="text-lg font-bold">19.8</p>
-                </div>
-                <div className="text-center">
-                  <Icon name="Activity" size={32} className="text-green-500 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Ping</p>
-                  <p className="text-lg font-bold">12ms</p>
-                </div>
-                <div className="text-center">
-                  <Icon name="HardDrive" size={32} className="text-blue-500 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Версия</p>
-                  <p className="text-lg font-bold">1.20.4</p>
-                </div>
-              </div>
-            </Card>
-          </section>
-        )}
 
         {activeSection === 'генератор' && (
           <section className="container mx-auto px-4 max-w-5xl">
