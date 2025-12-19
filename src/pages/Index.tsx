@@ -29,31 +29,94 @@ const rules = [
 
 export default function Index() {
   const [activeSection, setActiveSection] = useState('home');
-  const [rgbColor1, setRgbColor1] = useState('#9b87f5');
-  const [rgbColor2, setRgbColor2] = useState('#D946EF');
   const [onlinePlayers] = useState(247);
   const [maxPlayers] = useState(500);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const [gradientColors, setGradientColors] = useState<string[]>(['#9b87f5', '#D946EF']);
+  const [inputText, setInputText] = useState('Night-Times');
 
   const handleNavClick = (section: string) => {
     setActiveSection(section.toLowerCase());
     setMobileMenuOpen(false);
   };
 
-  const generateRGBFormats = (color1: string, color2: string) => {
-    const hex1 = color1.replace('#', '');
-    const hex2 = color2.replace('#', '');
-    
-    const formats = {
-      hex: `&#${hex1} - &#${hex2}`,
-      minecraft: `&x&${hex1[0]}&${hex1[1]}&${hex1[2]}&${hex1[3]}&${hex1[4]}&${hex1[5]} - &x&${hex2[0]}&${hex2[1]}&${hex2[2]}&${hex2[3]}&${hex2[4]}&${hex2[5]}`,
-      rgb: `rgb(${parseInt(hex1.substr(0,2),16)},${parseInt(hex1.substr(2,2),16)},${parseInt(hex1.substr(4,2),16)}) - rgb(${parseInt(hex2.substr(0,2),16)},${parseInt(hex2.substr(2,2),16)},${parseInt(hex2.substr(4,2),16)})`,
-    };
-    
-    return formats;
+  const addColor = () => {
+    if (gradientColors.length < 20) {
+      const randomColor = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
+      setGradientColors([...gradientColors, randomColor]);
+    }
   };
 
-  const formats = generateRGBFormats(rgbColor1, rgbColor2);
+  const removeColor = (index: number) => {
+    if (gradientColors.length > 2) {
+      setGradientColors(gradientColors.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateColor = (index: number, color: string) => {
+    const newColors = [...gradientColors];
+    newColors[index] = color;
+    setGradientColors(newColors);
+  };
+
+  const interpolateColor = (color1: string, color2: string, factor: number): string => {
+    const c1 = parseInt(color1.slice(1), 16);
+    const c2 = parseInt(color2.slice(1), 16);
+    
+    const r1 = (c1 >> 16) & 0xff;
+    const g1 = (c1 >> 8) & 0xff;
+    const b1 = c1 & 0xff;
+    
+    const r2 = (c2 >> 16) & 0xff;
+    const g2 = (c2 >> 8) & 0xff;
+    const b2 = c2 & 0xff;
+    
+    const r = Math.round(r1 + (r2 - r1) * factor);
+    const g = Math.round(g1 + (g2 - g1) * factor);
+    const b = Math.round(b1 + (b2 - b1) * factor);
+    
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+  };
+
+  const getColorForCharacter = (index: number, totalChars: number): string => {
+    if (gradientColors.length === 1) return gradientColors[0];
+    
+    const position = index / (totalChars - 1 || 1);
+    const scaledPosition = position * (gradientColors.length - 1);
+    const colorIndex = Math.floor(scaledPosition);
+    const factor = scaledPosition - colorIndex;
+    
+    if (colorIndex >= gradientColors.length - 1) {
+      return gradientColors[gradientColors.length - 1];
+    }
+    
+    return interpolateColor(gradientColors[colorIndex], gradientColors[colorIndex + 1], factor);
+  };
+
+  const generateGradientText = (format: 'hex' | 'minecraft' | 'rgb'): string => {
+    const chars = inputText.split('');
+    
+    return chars.map((char, index) => {
+      const color = getColorForCharacter(index, chars.length);
+      const hex = color.replace('#', '');
+      
+      switch (format) {
+        case 'hex':
+          return `&#${hex}${char}`;
+        case 'minecraft':
+          return `&x&${hex[0]}&${hex[1]}&${hex[2]}&${hex[3]}&${hex[4]}&${hex[5]}${char}`;
+        case 'rgb': {
+          const r = parseInt(hex.substr(0, 2), 16);
+          const g = parseInt(hex.substr(2, 2), 16);
+          const b = parseInt(hex.substr(4, 2), 16);
+          return `<rgb(${r},${g},${b})>${char}`;
+        }
+      }
+    }).join('');
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
@@ -327,96 +390,153 @@ export default function Index() {
         )}
 
         {activeSection === 'генератор' && (
-          <section className="container mx-auto px-4 max-w-4xl">
+          <section className="container mx-auto px-4 max-w-5xl">
             <div className="text-center mb-12">
               <h2 className="text-5xl font-bold gradient-text mb-4">Генератор RGB-градиентов</h2>
-              <p className="text-xl text-muted-foreground">Создавайте красивые градиенты для ников и текстов</p>
+              <p className="text-xl text-muted-foreground">Создавайте красивые градиенты для ников с поддержкой до 20 цветов</p>
             </div>
 
-            <Card className="glass-effect p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div>
-                  <label className="block text-sm font-medium mb-3">Цвет 1</label>
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="color"
-                      value={rgbColor1}
-                      onChange={(e) => setRgbColor1(e.target.value)}
-                      className="w-20 h-20 rounded-lg cursor-pointer border-2 border-white/20"
-                    />
-                    <input
-                      type="text"
-                      value={rgbColor1}
-                      onChange={(e) => setRgbColor1(e.target.value)}
-                      className="flex-1 bg-muted border border-border rounded-lg px-4 py-3 font-mono"
-                    />
-                  </div>
+            <Card className="glass-effect p-8 mb-6">
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-lg font-semibold">Цвета градиента ({gradientColors.length}/20)</label>
+                  <Button 
+                    onClick={addColor} 
+                    disabled={gradientColors.length >= 20}
+                    size="sm"
+                    className="bg-gradient-to-r from-primary to-secondary"
+                  >
+                    <Icon name="Plus" size={16} className="mr-2" />
+                    Добавить цвет
+                  </Button>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium mb-3">Цвет 2</label>
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="color"
-                      value={rgbColor2}
-                      onChange={(e) => setRgbColor2(e.target.value)}
-                      className="w-20 h-20 rounded-lg cursor-pointer border-2 border-white/20"
-                    />
-                    <input
-                      type="text"
-                      value={rgbColor2}
-                      onChange={(e) => setRgbColor2(e.target.value)}
-                      className="flex-1 bg-muted border border-border rounded-lg px-4 py-3 font-mono"
-                    />
-                  </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {gradientColors.map((color, index) => (
+                    <div key={index} className="relative group">
+                      <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border hover:border-primary/50 transition-colors">
+                        <input
+                          type="color"
+                          value={color}
+                          onChange={(e) => updateColor(index, e.target.value)}
+                          className="w-12 h-12 rounded cursor-pointer border border-white/20"
+                        />
+                        <input
+                          type="text"
+                          value={color}
+                          onChange={(e) => updateColor(index, e.target.value)}
+                          className="flex-1 bg-background/50 border-0 rounded px-2 py-1 text-sm font-mono"
+                        />
+                        {gradientColors.length > 2 && (
+                          <button
+                            onClick={() => removeColor(index)}
+                            className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-destructive text-destructive-foreground rounded-full p-1 hover:scale-110"
+                          >
+                            <Icon name="X" size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-lg font-semibold mb-3">Ваш текст</label>
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder="Введите текст для градиента..."
+                  className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-lg"
+                />
               </div>
 
               <div 
-                className="h-32 rounded-lg mb-8 flex items-center justify-center text-4xl font-black"
+                className="min-h-32 rounded-lg mb-6 flex items-center justify-center p-6 text-4xl font-black break-all text-center"
                 style={{
-                  background: `linear-gradient(90deg, ${rgbColor1}, ${rgbColor2})`
+                  background: `linear-gradient(90deg, ${gradientColors.join(', ')})`
                 }}
               >
-                Night-Times
+                {inputText || 'Введите текст'}
               </div>
+            </Card>
 
+            <Card className="glass-effect p-8">
+              <h3 className="text-2xl font-bold mb-6">Готовый код для копирования</h3>
+              
               <Tabs defaultValue="hex" className="w-full">
                 <TabsList className="grid w-full grid-cols-3 glass-effect">
                   <TabsTrigger value="hex">&#RRGGBB</TabsTrigger>
                   <TabsTrigger value="minecraft">&x&r&r&g&g&b&b</TabsTrigger>
-                  <TabsTrigger value="rgb">RGB(r,g,b)</TabsTrigger>
+                  <TabsTrigger value="rgb">{'<rgb(r,g,b)>'}</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="hex" className="mt-6">
                   <Card className="bg-muted p-4">
-                    <div className="flex items-center justify-between">
-                      <code className="text-sm font-mono">{formats.hex}</code>
-                      <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(formats.hex)}>
-                        <Icon name="Copy" size={16} />
-                      </Button>
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-muted-foreground">Формат: &#RRGGBB перед каждым символом</span>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            navigator.clipboard.writeText(generateGradientText('hex'));
+                          }}
+                        >
+                          <Icon name="Copy" size={16} className="mr-2" />
+                          Копировать
+                        </Button>
+                      </div>
+                      <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
+                        {generateGradientText('hex')}
+                      </code>
                     </div>
                   </Card>
                 </TabsContent>
                 
                 <TabsContent value="minecraft" className="mt-6">
                   <Card className="bg-muted p-4">
-                    <div className="flex items-center justify-between">
-                      <code className="text-sm font-mono break-all">{formats.minecraft}</code>
-                      <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(formats.minecraft)}>
-                        <Icon name="Copy" size={16} />
-                      </Button>
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-muted-foreground">Формат: &x&r&r&g&g&b&b перед каждым символом</span>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            navigator.clipboard.writeText(generateGradientText('minecraft'));
+                          }}
+                        >
+                          <Icon name="Copy" size={16} className="mr-2" />
+                          Копировать
+                        </Button>
+                      </div>
+                      <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
+                        {generateGradientText('minecraft')}
+                      </code>
                     </div>
                   </Card>
                 </TabsContent>
                 
                 <TabsContent value="rgb" className="mt-6">
                   <Card className="bg-muted p-4">
-                    <div className="flex items-center justify-between">
-                      <code className="text-sm font-mono">{formats.rgb}</code>
-                      <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(formats.rgb)}>
-                        <Icon name="Copy" size={16} />
-                      </Button>
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-muted-foreground">{'Формат: <rgb(r,g,b)> перед каждым символом'}</span>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            navigator.clipboard.writeText(generateGradientText('rgb'));
+                          }}
+                        >
+                          <Icon name="Copy" size={16} className="mr-2" />
+                          Копировать
+                        </Button>
+                      </div>
+                      <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
+                        {generateGradientText('rgb')}
+                      </code>
                     </div>
                   </Card>
                 </TabsContent>
