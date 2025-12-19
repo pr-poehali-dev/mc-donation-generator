@@ -7,27 +7,27 @@ import Icon from '@/components/ui/icon';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const donationPackages = [
-  { name: 'Барон', price: '99₽', color: 'from-gray-500 to-gray-700', perks: ['Префикс [Барон]', '+5% к опыту', 'Доступ к /home'] },
-  { name: 'Страж', price: '199₽', color: 'from-green-500 to-green-700', perks: ['Префикс [Страж]', '+10% к опыту', '/home x2', 'Приват 5000 блоков'] },
-  { name: 'Герой', price: '299₽', color: 'from-blue-500 to-blue-700', perks: ['Префикс [Герой]', '+15% к опыту', '/home x3', '/fly на 30 мин'] },
-  { name: 'Аспид', price: '399₽', color: 'from-purple-500 to-purple-700', perks: ['Префикс [Аспид]', '+20% к опыту', '/home x4', '/fly 1 час', 'Цветной ник'] },
-  { name: 'Сквид', price: '499₽', color: 'from-cyan-500 to-cyan-700', perks: ['Префикс [Сквид]', '+25% к опыту', '/home x5', '/fly 2 часа', 'Кит Сквид'] },
-  { name: 'Глава', price: '699₽', color: 'from-pink-500 to-pink-700', perks: ['Префикс [Глава]', '+30% к опыту', '/home x6', '/fly 4 часа', '/hat'] },
-  { name: 'Элита', price: '899₽', color: 'from-yellow-500 to-yellow-700', perks: ['Префикс [Элита]', '+40% к опыту', '/home x8', '/fly безлимит', 'Кит Элита'] },
-  { name: 'Титан', price: '1199₽', color: 'from-red-500 to-red-700', perks: ['Префикс [Титан]', '+50% к опыту', '/home x10', 'Креатив на час', '/god'] },
-  { name: 'Принц', price: '1499₽', color: 'from-indigo-500 to-indigo-700', perks: ['Префикс [Принц]', '+60% к опыту', '/home x12', 'WorldEdit лимит 5000', '/heal'] },
-  { name: 'Князь', price: '1999₽', color: 'from-orange-500 to-orange-700', perks: ['Префикс [Князь]', '+75% к опыту', '/home x15', 'WorldEdit лимит 10000', 'Приоритет в очереди'] },
-  { name: 'Герцог', price: '2999₽', color: 'from-violet-500 to-violet-700', perks: ['Префикс [Герцог]', '+90% к опыту', '/home x20', 'WorldEdit лимит 20000', 'Личный мир'] },
-  { name: 'Спонсор', price: '4999₽', color: 'from-amber-500 to-amber-700', perks: ['Префикс [Спонсор]', '+100% к опыту', '/home безлимит', 'WorldEdit безлимит', 'Все привилегии'] },
+  { name: 'Барон', price: '99₽', color: '#5CFFE5', perks: ['Префикс [Барон]', '+5% к опыту', 'Доступ к /home'] },
+  { name: 'Страж', price: '199₽', color: '#CDFF00', perks: ['Префикс [Страж]', '+10% к опыту', '/home x2', 'Приват 5000 блоков'] },
+  { name: 'Герой', price: '299₽', color: '#00FF66', perks: ['Префикс [Герой]', '+15% к опыту', '/home x3', '/fly на 30 мин'] },
+  { name: 'Аспид', price: '399₽', color: '#00FFF7', perks: ['Префикс [Аспид]', '+20% к опыту', '/home x4', '/fly 1 час', 'Цветной ник'] },
+  { name: 'Сквид', price: '499₽', color: '#00FFF7', perks: ['Префикс [Сквид]', '+25% к опыту', '/home x5', '/fly 2 часа', 'Кит Сквид'] },
+  { name: 'Глава', price: '699₽', color: '#FF7800', perks: ['Префикс [Глава]', '+30% к опыту', '/home x6', '/fly 4 часа', '/hat'] },
+  { name: 'Элита', price: '899₽', color: '#CD00FF', perks: ['Префикс [Элита]', '+40% к опыту', '/home x8', '/fly безлимит', 'Кит Элита'] },
+  { name: 'Титан', price: '1199₽', color: '#FF4600', perks: ['Префикс [Титан]', '+50% к опыту', '/home x10', 'Креатив на час', '/god'] },
+  { name: 'Принц', price: '1499₽', color: '#FF2300', perks: ['Префикс [Принц]', '+60% к опыту', '/home x12', 'WorldEdit лимит 5000', '/heal'] },
+  { name: 'Князь', price: '1999₽', color: '#FF0000', perks: ['Префикс [Князь]', '+75% к опыту', '/home x15', 'WorldEdit лимит 10000', 'Приоритет в очереди'] },
+  { name: 'Герцог', price: '2999₽', color: '#CB0000', perks: ['Префикс [Герцог]', '+90% к опыту', '/home x20', 'WorldEdit лимит 20000', 'Личный мир'] },
+  { name: 'Спонсор', price: '4999₽', color: '#FF6600', perks: ['Префикс [Спонсор]', '+100% к опыту', '/home безлимит', 'WorldEdit безлимит', 'Все привилегии'] },
 ];
 
 const cases = [
-  { name: 'Кейс с привилегиями', price: '149₽', color: 'from-yellow-400 to-amber-600', icon: 'Crown', perks: ['Случайная привилегия', 'От Барон до Страж', 'Гарантированная выдача'] },
-  { name: 'Обычный кейс', price: '99₽', color: 'from-gray-400 to-gray-600', icon: 'Package', perks: ['Случайные предметы', 'Ресурсы и блоки', 'Декор для базы'] },
-  { name: 'Кейс с токенами', price: '199₽', color: 'from-yellow-500 to-orange-500', icon: 'Coins', perks: ['50-500 токенов', 'Внутренняя валюта', 'Обмен на привилегии'] },
-  { name: 'Кейс с инструментами', price: '299₽', color: 'from-blue-400 to-cyan-600', icon: 'Wrench', perks: ['Зачарованные инструменты', 'Прочность до Неразрушимости', 'Кирка с Fortune III'] },
-  { name: 'Кейс с оружием', price: '349₽', color: 'from-red-500 to-rose-700', icon: 'Sword', perks: ['Зачарованное оружие', 'Мечи с Острота V', 'Луки с Сила V'] },
-  { name: 'Кейс с бронёй', price: '399₽', color: 'from-purple-500 to-violet-700', icon: 'Shield', perks: ['Полный сет брони', 'Защита IV на всех частях', 'Неразрушимость III'] },
+  { name: 'Кейс с привилегиями', price: '149₽', color: '#FFD700', icon: 'Crown', perks: ['Случайная привилегия', 'От Барон до Страж', 'Гарантированная выдача'] },
+  { name: 'Обычный кейс', price: '99₽', color: '#808080', icon: 'Package', perks: ['Случайные предметы', 'Ресурсы и блоки', 'Декор для базы'] },
+  { name: 'Кейс с токенами', price: '199₽', color: '#FFA500', icon: 'Coins', perks: ['50-500 токенов', 'Внутренняя валюта', 'Обмен на привилегии'] },
+  { name: 'Кейс с инструментами', price: '299₽', color: '#00CED1', icon: 'Wrench', perks: ['Зачарованные инструменты', 'Прочность до Неразрушимости', 'Кирка с Fortune III'] },
+  { name: 'Кейс с оружием', price: '349₽', color: '#DC143C', icon: 'Sword', perks: ['Зачарованное оружие', 'Мечи с Острота V', 'Луки с Сила V'] },
+  { name: 'Кейс с бронёй', price: '399₽', color: '#9932CC', icon: 'Shield', perks: ['Полный сет брони', 'Защита IV на всех частях', 'Неразрушимость III'] },
 ];
 
 const rules = [
@@ -277,11 +277,17 @@ export default function Index() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {donationPackages.map((pkg, idx) => (
                 <Card key={idx} className="glass-effect p-6 hover-scale group relative overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${pkg.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
+                  <div 
+                    className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity"
+                    style={{ background: `linear-gradient(135deg, ${pkg.color}, ${pkg.color}88)` }}
+                  />
                   
                   <div className="relative z-10">
-                    <div className={`inline-block px-4 py-2 rounded-lg bg-gradient-to-r ${pkg.color} mb-4`}>
-                      <h3 className="text-xl font-bold text-white">{pkg.name}</h3>
+                    <div 
+                      className="inline-block px-4 py-2 rounded-lg mb-4"
+                      style={{ backgroundColor: pkg.color }}
+                    >
+                      <h3 className="text-xl font-bold text-black">{pkg.name}</h3>
                     </div>
                     
                     <p className="text-4xl font-black mb-6">{pkg.price}</p>
@@ -289,13 +295,16 @@ export default function Index() {
                     <div className="space-y-3 mb-6">
                       {pkg.perks.map((perk, i) => (
                         <div key={i} className="flex items-start gap-2">
-                          <Icon name="Check" size={18} className="text-primary mt-0.5 flex-shrink-0" />
+                          <Icon name="Check" size={18} className="mt-0.5 flex-shrink-0" style={{ color: pkg.color }} />
                           <span className="text-sm text-muted-foreground">{perk}</span>
                         </div>
                       ))}
                     </div>
                     
-                    <Button className={`w-full bg-gradient-to-r ${pkg.color} hover:opacity-90`}>
+                    <Button 
+                      className="w-full hover:opacity-90 text-black font-bold"
+                      style={{ backgroundColor: pkg.color }}
+                    >
                       <Icon name="ShoppingCart" size={16} className="mr-2" />
                       Купить
                     </Button>
@@ -313,11 +322,17 @@ export default function Index() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {cases.map((caseItem, idx) => (
                   <Card key={idx} className="glass-effect p-6 hover-scale group relative overflow-hidden">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${caseItem.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
+                    <div 
+                      className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity"
+                      style={{ background: `linear-gradient(135deg, ${caseItem.color}, ${caseItem.color}88)` }}
+                    />
                     
                     <div className="relative z-10">
                       <div className="flex items-center justify-center mb-4">
-                        <div className={`w-20 h-20 rounded-full bg-gradient-to-r ${caseItem.color} flex items-center justify-center`}>
+                        <div 
+                          className="w-20 h-20 rounded-full flex items-center justify-center"
+                          style={{ backgroundColor: caseItem.color }}
+                        >
                           <Icon name={caseItem.icon as any} size={40} className="text-white" />
                         </div>
                       </div>
@@ -328,13 +343,16 @@ export default function Index() {
                       <div className="space-y-2 mb-6">
                         {caseItem.perks.map((perk, i) => (
                           <div key={i} className="flex items-start gap-2">
-                            <Icon name="Star" size={16} className="text-yellow-500 mt-0.5 flex-shrink-0" />
+                            <Icon name="Star" size={16} className="mt-0.5 flex-shrink-0" style={{ color: caseItem.color }} />
                             <span className="text-sm text-muted-foreground">{perk}</span>
                           </div>
                         ))}
                       </div>
                       
-                      <Button className={`w-full bg-gradient-to-r ${caseItem.color} hover:opacity-90`}>
+                      <Button 
+                        className="w-full hover:opacity-90 text-white font-bold"
+                        style={{ backgroundColor: caseItem.color }}
+                      >
                         <Icon name="Box" size={16} className="mr-2" />
                         Открыть кейс
                       </Button>
