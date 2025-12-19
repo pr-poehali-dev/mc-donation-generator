@@ -35,6 +35,13 @@ export default function Index() {
   
   const [gradientColors, setGradientColors] = useState<string[]>(['#9b87f5', '#D946EF']);
   const [inputText, setInputText] = useState('Night-Times');
+  const [textStyles, setTextStyles] = useState({
+    underline: false,
+    strikethrough: false,
+    bold: false,
+    obfuscated: false,
+    italic: false
+  });
 
   const handleNavClick = (section: string) => {
     setActiveSection(section.toLowerCase());
@@ -94,26 +101,30 @@ export default function Index() {
     return interpolateColor(gradientColors[colorIndex], gradientColors[colorIndex + 1], factor);
   };
 
-  const generateGradientText = (format: 'hex' | 'minecraft' | 'rgb'): string => {
+  const generateGradientText = (): string => {
     const chars = inputText.split('');
+    
+    let styleCode = '';
+    if (textStyles.underline) styleCode += '&n';
+    if (textStyles.strikethrough) styleCode += '&m';
+    if (textStyles.bold) styleCode += '&l';
+    if (textStyles.obfuscated) styleCode += '&k';
+    if (textStyles.italic) styleCode += '&o';
     
     return chars.map((char, index) => {
       const color = getColorForCharacter(index, chars.length);
-      const hex = color.replace('#', '');
-      
-      switch (format) {
-        case 'hex':
-          return `&#${hex}${char}`;
-        case 'minecraft':
-          return `&x&${hex[0]}&${hex[1]}&${hex[2]}&${hex[3]}&${hex[4]}&${hex[5]}${char}`;
-        case 'rgb': {
-          const r = parseInt(hex.substr(0, 2), 16);
-          const g = parseInt(hex.substr(2, 2), 16);
-          const b = parseInt(hex.substr(4, 2), 16);
-          return `<rgb(${r},${g},${b})>${char}`;
-        }
-      }
+      const hex = color.replace('#', '').toUpperCase();
+      return `&#${hex}${styleCode}${char}`;
     }).join('');
+  };
+
+  const getPreviewTextStyle = (): React.CSSProperties => {
+    const style: React.CSSProperties = {};
+    if (textStyles.underline) style.textDecoration = 'underline';
+    if (textStyles.strikethrough) style.textDecoration = (style.textDecoration || '') + ' line-through';
+    if (textStyles.bold) style.fontWeight = 'bold';
+    if (textStyles.italic) style.fontStyle = 'italic';
+    return style;
   };
 
 
@@ -452,95 +463,91 @@ export default function Index() {
                 />
               </div>
 
-              <div 
-                className="min-h-32 rounded-lg mb-6 flex items-center justify-center p-6 text-4xl font-black break-all text-center"
-                style={{
-                  background: `linear-gradient(90deg, ${gradientColors.join(', ')})`
-                }}
-              >
-                {inputText || 'Введите текст'}
+              <div className="min-h-32 rounded-lg mb-6 flex items-center justify-center p-6 bg-muted/30">
+                <div 
+                  className="text-4xl font-black break-all text-center"
+                  style={{
+                    backgroundImage: `linear-gradient(90deg, ${gradientColors.join(', ')})`,
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    ...getPreviewTextStyle()
+                  }}
+                >
+                  {inputText || 'Введите текст'}
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-lg font-semibold mb-3">Стили текста</label>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant={textStyles.underline ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTextStyles({...textStyles, underline: !textStyles.underline})}
+                    className={textStyles.underline ? 'bg-primary' : ''}
+                  >
+                    <span className="underline">Подчëркнутый</span> <code className="ml-2 text-xs">&n</code>
+                  </Button>
+                  <Button
+                    variant={textStyles.strikethrough ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTextStyles({...textStyles, strikethrough: !textStyles.strikethrough})}
+                    className={textStyles.strikethrough ? 'bg-primary' : ''}
+                  >
+                    <span className="line-through">Зачëркнутый</span> <code className="ml-2 text-xs">&m</code>
+                  </Button>
+                  <Button
+                    variant={textStyles.bold ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTextStyles({...textStyles, bold: !textStyles.bold})}
+                    className={textStyles.bold ? 'bg-primary' : ''}
+                  >
+                    <span className="font-bold">Толстый</span> <code className="ml-2 text-xs">&l</code>
+                  </Button>
+                  <Button
+                    variant={textStyles.obfuscated ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTextStyles({...textStyles, obfuscated: !textStyles.obfuscated})}
+                    className={textStyles.obfuscated ? 'bg-primary' : ''}
+                  >
+                    <span>Obfuscated</span> <code className="ml-2 text-xs">&k</code>
+                  </Button>
+                  <Button
+                    variant={textStyles.italic ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTextStyles({...textStyles, italic: !textStyles.italic})}
+                    className={textStyles.italic ? 'bg-primary' : ''}
+                  >
+                    <span className="italic">Наклонëнный</span> <code className="ml-2 text-xs">&o</code>
+                  </Button>
+                </div>
               </div>
             </Card>
 
             <Card className="glass-effect p-8">
               <h3 className="text-2xl font-bold mb-6">Готовый код для копирования</h3>
               
-              <Tabs defaultValue="hex" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 glass-effect">
-                  <TabsTrigger value="hex">&#RRGGBB</TabsTrigger>
-                  <TabsTrigger value="minecraft">&x&r&r&g&g&b&b</TabsTrigger>
-                  <TabsTrigger value="rgb">{'<rgb(r,g,b)>'}</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="hex" className="mt-6">
-                  <Card className="bg-muted p-4">
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-muted-foreground">Формат: &#RRGGBB перед каждым символом</span>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => {
-                            navigator.clipboard.writeText(generateGradientText('hex'));
-                          }}
-                        >
-                          <Icon name="Copy" size={16} className="mr-2" />
-                          Копировать
-                        </Button>
-                      </div>
-                      <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
-                        {generateGradientText('hex')}
-                      </code>
-                    </div>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="minecraft" className="mt-6">
-                  <Card className="bg-muted p-4">
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-muted-foreground">Формат: &x&r&r&g&g&b&b перед каждым символом</span>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => {
-                            navigator.clipboard.writeText(generateGradientText('minecraft'));
-                          }}
-                        >
-                          <Icon name="Copy" size={16} className="mr-2" />
-                          Копировать
-                        </Button>
-                      </div>
-                      <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
-                        {generateGradientText('minecraft')}
-                      </code>
-                    </div>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="rgb" className="mt-6">
-                  <Card className="bg-muted p-4">
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-muted-foreground">{'Формат: <rgb(r,g,b)> перед каждым символом'}</span>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => {
-                            navigator.clipboard.writeText(generateGradientText('rgb'));
-                          }}
-                        >
-                          <Icon name="Copy" size={16} className="mr-2" />
-                          Копировать
-                        </Button>
-                      </div>
-                      <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
-                        {generateGradientText('rgb')}
-                      </code>
-                    </div>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+              <Card className="bg-muted p-4">
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-muted-foreground">Формат: &#RRGGBB{textStyles.underline || textStyles.strikethrough || textStyles.bold || textStyles.obfuscated || textStyles.italic ? ' + стили' : ''} перед каждым символом</span>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      onClick={() => {
+                        navigator.clipboard.writeText(generateGradientText());
+                      }}
+                    >
+                      <Icon name="Copy" size={16} className="mr-2" />
+                      Копировать
+                    </Button>
+                  </div>
+                  <code className="text-xs font-mono break-all block bg-background/50 p-3 rounded max-h-40 overflow-y-auto">
+                    {generateGradientText()}
+                  </code>
+                </div>
+              </Card>
             </Card>
           </section>
         )}
