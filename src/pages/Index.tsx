@@ -33,6 +33,12 @@ export default function Index() {
   const [rgbColor2, setRgbColor2] = useState('#D946EF');
   const [onlinePlayers] = useState(247);
   const [maxPlayers] = useState(500);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleNavClick = (section: string) => {
+    setActiveSection(section.toLowerCase());
+    setMobileMenuOpen(false);
+  };
 
   const generateRGBFormats = (color1: string, color2: string) => {
     const hex1 = color1.replace('#', '');
@@ -65,7 +71,7 @@ export default function Index() {
               {['Главная', 'Донаты', 'Правила', 'Онлайн', 'Генератор', 'Контакты'].map((item) => (
                 <button
                   key={item}
-                  onClick={() => setActiveSection(item.toLowerCase())}
+                  onClick={() => handleNavClick(item)}
                   className={`text-sm font-medium transition-all ${
                     activeSection === item.toLowerCase()
                       ? 'text-primary'
@@ -77,12 +83,50 @@ export default function Index() {
               ))}
             </div>
 
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-              <Icon name="Zap" size={16} className="mr-2" />
-              Токены
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button className="hidden md:inline-flex bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+                <Icon name="Zap" size={16} className="mr-2" />
+                Токены
+              </Button>
+              
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label="Меню"
+              >
+                {mobileMenuOpen ? (
+                  <Icon name="X" size={24} className="text-foreground" />
+                ) : (
+                  <Icon name="Menu" size={24} className="text-foreground" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden glass-effect border-t border-white/10 animate-fade-in">
+            <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
+              {['Главная', 'Донаты', 'Правила', 'Онлайн', 'Генератор', 'Контакты'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleNavClick(item)}
+                  className={`text-left px-4 py-3 rounded-lg font-medium transition-all ${
+                    activeSection === item.toLowerCase()
+                      ? 'bg-primary/20 text-primary'
+                      : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+              <Button className="mt-2 w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+                <Icon name="Zap" size={16} className="mr-2" />
+                Токены
+              </Button>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main className="pt-24 pb-12">

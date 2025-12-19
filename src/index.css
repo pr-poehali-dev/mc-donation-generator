@@ -70,4 +70,8 @@
   .glow-effect {
     box-shadow: 0 0 20px rgba(155, 135, 245, 0.3);
   }
+
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
 }
